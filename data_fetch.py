@@ -10,8 +10,8 @@ CACHE_FILENAME = "cache.json"
 # use request header to avoid being blocked
 REQUEST_HEADER = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'}
 PROXY = {
-    "http":"socks5://127.0.0.1:10808",
-    "https":"socks5://127.0.0.1:10808"
+    # "http":"socks5://127.0.0.1:10808",
+    # "https":"socks5://127.0.0.1:10808"
 }
 COLUMN_NAME = ("Incident ID", "Incident Date", "State", "City Or County", "Address", "# Killed", "# Injured")
 
