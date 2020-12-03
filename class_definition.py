@@ -57,36 +57,36 @@ class shooting_record:
 # transformed from a init_list to a modified list
 def transform(init_list:list)->dict:
     res = {}
-    res["Incident ID"] = int(init_list[0])
-    res["Incident Date"] = init_list[1] if init_list[1] not in ["", None] else None
+    res["Incident_ID"] = int(init_list[0])
+    res["Incident_Date"] = init_list[1] if init_list[1] not in ["", None] else None
     res["State"] = init_list[2] if init_list[2] not in ["", None] else None
-    res["City or County"] = init_list[3] if init_list[3] not in ["", None] else None
+    res["City_or_County"] = init_list[3] if init_list[3] not in ["", None] else None
     res["Address"] = init_list[4] if init_list[4] not in ["", None] else None
-    res["# Killed"] = int(init_list[5]) if init_list[5] not in ["", None] else None
-    res["# Injured"] = int(init_list[6]) if init_list[6] not in ["", None] else None
+    res["Killed"] = int(init_list[5]) if init_list[5] not in ["", None] else None
+    res["Injured"] = int(init_list[6]) if init_list[6] not in ["", None] else None
     return res
 
 
 # transformed to a string
 def record_to_string(row)->str:
-    output = "Accident " + str(row["Incident ID"])
-    if row["Incident Date"]:
-        output += " on " + row["Incident Date"]
-    if row["City or County"] and row["State"]:
-        output += " in " + row["City or County"] + ", " + row["State"]
-    elif row["City or County"] or row["State"]:
+    output = "Accident " + str(row["Incident_ID"])
+    if row["Incident_Date"]:
+        output += " on " + row["Incident_Date"]
+    if row["City_or_County"] and row["State"]:
+        output += " in " + row["City_or_County"] + ", " + row["State"]
+    elif row["City_or_County"] or row["State"]:
         output += " in "
-        output += row["City or County"] if row["City or County"] else ""
+        output += row["City_or_County"] if row["City_or_County"] else ""
         output += row["State"] if row["State"] else ""
     if row["Address"]:
         output += " (" + row["Address"] + ")"
-    if row["# Killed"] or row["# Injured"]:
+    if row["Killed"] or row["Injured"]:
         output += " causes"
-        if row["# Killed"]:
-            output += " " + str(row["# Killed"]) + " death"
-        if row["# Killed"] and row["# Injured"]:
+        if row["Killed"]:
+            output += " " + str(row["Killed"]) + " death"
+        if row["Killed"] and row["Injured"]:
             output += " and"
-        if row["# Injured"]:
-            output += " " + str(row["# Injured"]) + " injure"
+        if row["Injured"]:
+            output += " " + str(row["Injured"]) + " injure"
     return output + ". "
     

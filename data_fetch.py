@@ -5,22 +5,24 @@ import datetime
 from class_definition import shooting_record
 import class_definition
 import pandas as pd
+import sqlite3
 
+DB_CACHE_FILE = "database_cache.db"
 CACHE_FILENAME = "cache.json"
 # use request header to avoid being blocked
 REQUEST_HEADER = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'}
 PROXY = {
-    # "http":"socks5://127.0.0.1:10808",
-    # "https":"socks5://127.0.0.1:10808"
+    "http":"socks5://127.0.0.1:10808",
+    "https":"socks5://127.0.0.1:10808"
 }
-COLUMN_NAME = ("Incident ID", "Incident Date", "State", "City Or County", "Address", "# Killed", "# Injured")
+COLUMN_NAME = ("Incident_ID", "Incident_Date", "State", "City_or_County", "Address", "Killed", "Injured")
 
 
 # generate cache key of crawl request
 # format: $(base_url)\+$(today)
 def crawl_request_cache_key(url:str):
     today = datetime.date.today()
-    return url + "+" + str(today)
+    return url + "+" + str(today.year) + "-" + str(today.month)
 
 # generate cache key of API request
 # format: $(base_url)\+(($(param_key)\?$(param_value))\+)*$(today)
@@ -30,7 +32,7 @@ def api_request_cache_key(url:str, params:dict=None):
         for (key, value) in params.items():
             params_str += key + "?" + value + "+"
     today = datetime.date.today()
-    return url + "+" + params_str + str(today)
+    return url + "+" + params_str + str(today.year) + "-" + str(today.month)
 
 
 # webpage request with cache
@@ -45,8 +47,10 @@ def web_request(url:str, header=REQUEST_HEADER):
     key = crawl_request_cache_key(url)
 
     if key in cache_dict.keys():
+        print("Found in website cache, reading...")
         return cache_dict[key]
     else:
+        print("No cache found for webpage, need to fetch from Internet, which may take several seconds to several minutes...")
         resp = requests.get(url, headers=header, timeout=10, proxies=PROXY)
         content = resp.text.encode(resp.encoding).decode('utf-8', 'ignore')
         cache_dict[key] = content
@@ -142,4 +146,27 @@ def crawl_main_page(main_page_url:str)->dict:
     return res
 
 
-print(multiple_scrape("https://www.gunviolencearchive.org/mass-shooting"))
+################# SQL ##################
+
+# the top interface for multiple page crawling, using SQL cache
+def crawl_report_page(url:str) -> pd.core.frame.DataFrame:
+    conn = sqlite3.connect(DB_CACHE_FILE)
+
+    key = crawl_request_cache_key(url)
+    
+    # judge if exists
+    cur = conn.cursor()
+    cur.execute("SELECT name FROM sqlite_master WHERE type='table'")
+    table_list = [i[0] for i in cur.fetchall()]
+
+    if key in table_list:
+        print("Reading from SQL cache...")
+        df = pd.read_sql("SELECT * FROM \"" + key + "\"", conn)
+    else:
+        print("No SQL cache, looking for webpage cache...")
+        df = multiple_scrape(url)
+        df.to_sql(key, conn)
+
+    conn.close()
+    return df
+
