@@ -50,8 +50,19 @@ class shooting_record:
             if self.injured:
                 output += " " + str(self.injured) + " injure"
         return output + ". "
+
+    def to_search_string(self):
+        if not self.address:
+            return None
+        
+        output = self.address
+        output += (", " + self.city_or_county) if self.city_or_county else ""
+        output += (", " + self.state) if self.state else ""
+        return output
     
 
+# These following functions provide similar functionality as the class, but organized in pandas, so we can have a faster access time
+# Actually, they're directly modified from the class functions
 
 
 # transformed from a init_list to a modified list
@@ -90,3 +101,17 @@ def record_to_string(row)->str:
             output += " " + str(row["Injured"]) + " injure"
     return output + ". "
     
+
+def address_to_search(row)->str:
+    '''
+    Take a row of pandas dataframe, or a dict. 
+    Returns none if not available, or a string.
+    '''
+    if not row["Address"]:
+        return None
+    output = row["Address"]
+    output += (", " + row["City_or_County"]) if row["City_or_County"] else ""
+    output += (", " + row["State"]) if row["State"] else ""   
+    return output
+
+

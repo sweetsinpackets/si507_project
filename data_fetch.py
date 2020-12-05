@@ -32,7 +32,7 @@ def api_request_cache_key(url:str, params:dict=None):
         for (key, value) in params.items():
             params_str += key + "?" + value + "+"
     today = datetime.date.today()
-    return url + "+" + params_str + str(today.year) + "-" + str(today.month)
+    return url + "+" + params_str
 
 
 # webpage request with cache
@@ -72,8 +72,10 @@ def api_request(url:str, header=None):
     key = api_request_cache_key(url, params=header)
 
     if key in cache_dict.keys():
+        print("Reading API cache...")
         return cache_dict[key]
     else:
+        print("No API cached result, need to fetch...")
         resp = requests.get(url, params=header)
         content = resp.text.encode(resp.encoding).decode('utf-8', 'ignore')
         cache_dict[key] = content
@@ -163,7 +165,7 @@ def crawl_report_page(url:str) -> pd.core.frame.DataFrame:
         print("Reading from SQL cache...")
         df = pd.read_sql("SELECT * FROM \"" + key + "\"", conn)
     else:
-        print("No SQL cache, looking for webpage cache...")
+        print("No SQL records found, looking for webpage cache...")
         df = multiple_scrape(url)
         df.to_sql(key, conn)
 
