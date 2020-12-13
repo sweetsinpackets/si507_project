@@ -51,7 +51,8 @@ def web_request(url:str, header=REQUEST_HEADER):
         return cache_dict[key]
     else:
         print("No cache found for webpage, need to fetch from Internet, which may take several seconds to several minutes...")
-        resp = requests.get(url, headers=header, timeout=10, proxies=PROXY)
+        # resp = requests.get(url, headers=header, timeout=10, proxies=PROXY)
+        resp = requests.get(url, headers=header, timeout=10)
         content = resp.text.encode(resp.encoding).decode('utf-8', 'ignore')
         cache_dict[key] = content
         dumped_json_cache = json.dumps(cache_dict)

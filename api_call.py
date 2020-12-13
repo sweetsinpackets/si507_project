@@ -1,9 +1,6 @@
 import json
-import requests
-import datetime
 
-from requests import api
-from class_definition import shooting_record
+# from class_definition import shooting_record
 import class_definition
 import pandas as pd
 from data_fetch import api_request

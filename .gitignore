@@ -1,2 +1,6 @@
 
-__pycache__/class_definition.cpython-38.pyc
+__pycache__
+cache.json
+database_cache.db
+output_figure.html
+secrets.py
