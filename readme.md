@@ -20,6 +20,8 @@ requests.get(..., proxies=YOUR_PROXY)
 ```
 
 ## How to Run
-Simply go to the code directory and run `python main.py`.
+Simply go to the code directory and run `python main.py`. Then you can follow the instructions within the code. 
 
-Then you can follow the instructions within the code.
+At the start of the program, you will see a list of available reports on GVA, then you will be asked to select one specific report.
+After selecting a report, you will see the crawled records from the report. The program will ask you to input a state to select the records happened in the state. You will see the selected records and you can choose whether to plot.
+We offer both command line interaction and a plot map to show the cases. If you choose to plot, then the program will automatically open a website for you, containing a map of state with the dots representing cases.
